@@ -53,7 +53,7 @@ class CreditCard:
         return sum
 
 def Read_Image(img):
-    reader=easyocr.Reader(['en'])
+    reader=easyocr.Reader(['en'],gpu=False)
     results = reader.readtext(img)
     print(results)
     return Check(results)
