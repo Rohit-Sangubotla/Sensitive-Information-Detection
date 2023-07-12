@@ -53,7 +53,7 @@ class CreditCard:
         return sum
 
 def Read_Image(img):
-    reader=easyocr.Reader(['en'], gpu=False)
+    reader=easyocr.Reader(['en'])
     results = reader.readtext(img)
     print(results)
     return Check(results)
@@ -164,9 +164,9 @@ def CC_test(a):
         print("CC")
         if 'Credit Card Number' not in typesOfInfo: typesOfInfo.append('Credit Card Number')
     return CCresult
+typesOfInfo=[]
 
 #Text
-typesOfInfo=[]
 title = """
     <p style="text-align:center; font-size:300%;margin-bottom:0px">
     <b>
