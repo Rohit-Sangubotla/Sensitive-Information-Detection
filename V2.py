@@ -53,7 +53,7 @@ class CreditCard:
         return sum
 
 def Read_Image(img):
-    reader=easyocr.Reader(['en'], gpu=True)
+    reader=easyocr.Reader(['en'], gpu=False)
     results = reader.readtext(img)
     print(results)
     return Check(results)
@@ -68,10 +68,10 @@ def Check(results):
         Panresult = Pan_test(i)
         Licenseresult = License_test(i)
         CCresult = CC_test(i)
+
         if (Phoneresult or Landlineresult or IPresult or Aadharresult or Licenseresult or Panresult or CCresult):
             coordinates_list.append(i[0])
     return coordinates_list
-
 
 def Phone_test(a):
     pattern = re.compile(r"((?<!\d)(?<!\d)(\+91)?[ -]?\d\d\d[ -]?\d\d[ -]?\d[ -]?\d\d\d\d(?!\d))")
@@ -90,17 +90,36 @@ def Landline_test(a):
         return True
 
 def Pan_test(a):
-    pattern =  re.compile(r"[A-Z]{5}\d{4}[A-Z]")
-    test =  pattern.search(a[1])
-    if test!=None:
-        print("pan")
-        if 'PAN Number' not in typesOfInfo: typesOfInfo.append('PAN Number')
-        return True
+    pattern1 =  re.compile(r"[A-Z]{5}\d{4}[A-Z]")
+    pattern2 = re.compile(r"GOVT.? ?OF ? INDIA")
+    pattern3 = re.compile(r"INCOME TAX DEPARTMENT")
+
+    if pattern1.search(a[1])!=None:
+        Panresult = True
+    else:
+        if pattern2.search(a[1])!=None:
+            Panresult = True
+        else:
+            if pattern3.search(a[1])!=None:
+                Panresult = True
+            else:
+                 Panresult =  False
+    if Panresult:
+        print("Pan")
+        if 'Pan Card' not in typesOfInfo: typesOfInfo.append('Pan Card')
+    return Panresult
     
 def IP_test(a):
-    pattern = re.compile(r"((?<!\d)(?!10\.)(?!192\.168\.)(?!172\.(1[6-9]|2[0-9]|3[0-1])\.)(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(?!\d))")
-    test = pattern.search(a[1])
-    if test!=None:
+    pattern1 = re.compile(r"((?<!\d)(?!10\.)(?!192\.168\.)(?!172\.(1[6-9]|2[0-9]|3[0-1])\.)(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(?!\d))")
+    pattern2 = re.compile(r"IP address")
+    if pattern1.search(a[1])!=None:
+        IPresult = True
+    else:
+        if pattern2.search(a[1])!=None:
+            IPresult = True
+        else: 
+            IPresult = False
+    if IPresult:
         print("IP")
         if 'IP Address' not in typesOfInfo: typesOfInfo.append('IP Address')
         return True
@@ -108,7 +127,7 @@ def IP_test(a):
 def Aadhar_test(a):
     pattern = re.compile(r"((\d\d\d\d[ ]?\d\d\d\d[ ]?\d\d\d\d(?!\d)))")
     test = pattern.search(a[1])
-    if test!=None and not CC_test:
+    if test!=None:
         print("aadhar")
         if 'Aadhar Number' not in typesOfInfo: typesOfInfo.append('Aadhar Number')
         return True
@@ -146,6 +165,7 @@ def CC_test(a):
         if 'Credit Card Number' not in typesOfInfo: typesOfInfo.append('Credit Card Number')
     return CCresult
 
+#Text
 typesOfInfo=[]
 title = """
     <p style="text-align:center; font-size:300%;margin-bottom:0px">
@@ -155,7 +175,7 @@ title = """
     </p>
 """
 st.markdown(title, unsafe_allow_html=True)
-center = """
+subtitle = """
 <p style = "text-align:center">
     <span style="color:blue;font-size:150%">
     Protecting 
@@ -170,21 +190,35 @@ center = """
     on the internet
     </span>
 """
-st.markdown(center , unsafe_allow_html=True)
+st.markdown(subtitle , unsafe_allow_html=True)
+st.markdown("""
+<style>
+.centerfont {
+    font-family:"Times New Roman" !important;
+    text-align:left;
+    margin-bottom:0px;
+    font-size:110%;
+}
+</style>
+""", unsafe_allow_html=True)
+st.markdown('''<p class="centerfont">With the increasing need for privacy protection online in mind, the Sensitive 
+Information Detector is a great tool to help detect personally identifiable.
+information that can compromise  security. This can be used to protect
+personal privacy, secure online transactions, prevent identity theft and for    many other purposes.</p>''', unsafe_allow_html=True)
 
-
-#st.image(img.read())
-#st.image(img,caption = 'ur mom mmm')
+#Hiding the watermark
 hide_streamlit_style = """
-            <style>
-            #MainMenu {visibility: hidden;}
-            footer {visibility: hidden;}
-            </style>
-            """
+<style>
+footer {visibility: hidden;}
+</style>
+"""
 st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
-Found = False
-file = st.file_uploader("input image here:", type = ['png','jpg','jpeg'])
 
+#Image uploader
+Found = False
+file = st.file_uploader("Upload your images here to check for sensitive information.", type = ['png','jpg','jpeg'])
+
+#When the file is uploaded
 if file:
     st.markdown('''
         <style>
@@ -196,13 +230,16 @@ if file:
     if coordinates_list!=[]:
         Found = True
     for i in coordinates_list:
-        cv2.rectangle(img, [int(i[0][0]),int(i[0][1])],[int(i[2][0]),int(i[2][1])],(255,0,0),3)
+        cv2.rectangle(img, [int(i[0][0]),int(i[0][1])],[int(i[2][0]),int(i[2][1])],(0,0,255),3)
 
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     st.image(img)
+    
     text = """
-        Image seems to contain the following sensitive information:
+        Image seems to contain one or more of the following sensitive information:
     """
-    st.text(text)
+    st.markdown(text, unsafe_allow_html=True)
     for x in typesOfInfo:
-        st.text("• "+x)
+        textx = "• "+x
+        st.markdown(textx, unsafe_allow_html=True)
 
