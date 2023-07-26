@@ -3,7 +3,6 @@ import cv2
 from FUNCTIONS1 import * 
 import streamlit as st
 import numpy as np 
-import base64
 import requests
 import json
 from PIL import Image
@@ -18,13 +17,13 @@ def Check(results):
     for i in results:
         s = i[1]
         inputs = {"i":s}
-        Phoneresult = requests.post(url = "http://127.0.0.1:8000/PhoneNumber", data = json.dumps(inputs))
-        Landlineresult = requests.post(url = "http://127.0.0.1:8000/Landline", data = json.dumps(inputs))
-        IPresult = requests.post(url = "http://127.0.0.1:8000/IP", data = json.dumps(inputs))
-        Aadharresult = requests.post(url = "http://127.0.0.1:8000/Aadhar", data = json.dumps(inputs))
-        Panresult = requests.post(url = "http://127.0.0.1:8000/PAN", data = json.dumps(inputs))
-        Licenseresult = requests.post(url = "http://127.0.0.1:8000/License", data = json.dumps(inputs))
-        CCresult = requests.post(url = "http://127.0.0.1:8000/CreditCard", data = json.dumps(inputs))
+        Phoneresult = requests.post(url = "https://detafasttest-1-s3217651.deta.app/PhoneNumber", data = json.dumps(inputs))
+        Landlineresult = requests.post(url = "https://detafasttest-1-s3217651.deta.app/Landline", data = json.dumps(inputs))
+        IPresult = requests.post(url = "https://detafasttest-1-s3217651.deta.app/IP", data = json.dumps(inputs))
+        Aadharresult = requests.post(url = "https://detafasttest-1-s3217651.deta.app/Aadhar", data = json.dumps(inputs))
+        Panresult = requests.post(url = "https://detafasttest-1-s3217651.deta.app/PAN", data = json.dumps(inputs))
+        Licenseresult = requests.post(url = "https://detafasttest-1-s3217651.deta.app/License", data = json.dumps(inputs))
+        CCresult = requests.post(url = "https://detafasttest-1-s3217651.deta.app/CreditCard", data = json.dumps(inputs))
         
         if (Phoneresult.text=="true" or Landlineresult.text=="true" or IPresult.text=="true" or Aadharresult.text=="true" or Licenseresult.text=="true" or Panresult.text=="true" or CCresult.text=="true"):
             coordinates_list.append(i[0])
