@@ -128,4 +128,4 @@ if file:
         textx = "• "+x
         st.markdown(textx, unsafe_allow_html=True)
 
-#command: streamlit run C:\Users\rohit\OneDrive\Desktop\Python_files\New folder (2)\Streamlit.py
+#command: streamlit run V3_Streamlit.py
