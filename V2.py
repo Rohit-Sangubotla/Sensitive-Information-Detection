@@ -202,7 +202,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 st.markdown('''<p class="centerfont">With the increasing need for privacy protection online in mind, the Sensitive 
-Information Detector is a great tool to help detect personally identifiable.
+Information Detector is a great tool to help detect personally identifiable
 information that can compromise  security. This can be used to protect
 personal privacy, secure online transactions, prevent identity theft and for    many other purposes.</p>''', unsafe_allow_html=True)
 
@@ -242,4 +242,3 @@ if file:
     for x in typesOfInfo:
         textx = "• "+x
         st.markdown(textx, unsafe_allow_html=True)
-
